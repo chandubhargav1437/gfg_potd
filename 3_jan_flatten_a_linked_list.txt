@@ -1,0 +1,56 @@
+/*
+class Node {
+public:
+    int data;
+    Node* next;
+    Node* bottom;
+
+    Node(int x) {
+        data = x;
+        next = NULL;
+        bottom = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+   Node* merge(Node* a, Node* b) {
+        // Base cases: if one list is empty, return the other
+        if (!a) return b;
+        if (!b) return a;
+        
+        Node* result;
+        
+        // Compare data to keep the list sorted
+        if (a->data < b->data) {
+            result = a;
+            // Recursively merge the remaining nodes
+            result->bottom = merge(a->bottom, b);
+        } else {
+            result = b;
+            result->bottom = merge(a, b->bottom);
+        }
+        
+        // Ensure the 'next' pointer is null since we are forming a single vertical list
+        result->next = NULL;
+        return result;
+    }
+
+    // Main function to flatten the list
+    Node *flatten(Node *root) {
+        // Base case: if root is null or we reached the last horizontal node
+        if (!root || !root->next)
+            return root;
+            
+        // Recursively flatten the list to the right
+        // root->next will essentially become the head of the "accumulated" sorted list
+        root->next = flatten(root->next);
+        
+        // Merge the current vertical list (root) with the flattened list on the right
+        root = merge(root, root->next);
+        
+        // Return the new head of the flattened structure
+        return root;
+    }
+};

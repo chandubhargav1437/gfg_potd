@@ -1,0 +1,31 @@
+class Solution {
+  public:
+    int maxSubarrayXOR(vector<int>& arr, int k) {
+        // code here
+        int n = arr.size();
+
+        // Edge case: If k is larger than the array size, return -1 or handle appropriately
+        if (k > n) return -1; 
+
+        int current_xor = 0;
+
+        // Step 1: Compute XOR of the first window (first k elements)
+        for (int i = 0; i < k; ++i) {
+            current_xor ^= arr[i];
+        }
+
+        int max_xor = current_xor;
+
+        // Step 2: Slide the window across the array
+        for (int i = k; i < n; ++i) {
+            // Remove the element going out of the window (arr[i-k])
+            // Add the element coming into the window (arr[i])
+            current_xor = current_xor ^ arr[i - k] ^ arr[i];
+
+            // Update the maximum XOR found so far
+            max_xor = max(max_xor, current_xor);
+        }
+
+        return max_xor;
+    }
+};

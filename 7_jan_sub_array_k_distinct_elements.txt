@@ -1,0 +1,22 @@
+class Solution {
+  public:
+    vector<int> countDistinct(vector<int> &arr, int k) {
+        // code here
+        unordered_map<int,int>mp;
+        int n=arr.size();
+        vector<int>ans;
+        for(int i=0;i<k;i++){
+            mp[arr[i]]++;
+        }
+        ans.push_back(mp.size());
+        for(int j=1;j<n-k+1;j++){
+            mp[arr[j-1]]--;
+            if(mp[arr[j-1]]<1){
+                mp.erase(arr[j-1]);
+            }
+            mp[arr[k+j-1]]++;
+            ans.push_back(mp.size());
+        }
+        return ans;
+    }
+};

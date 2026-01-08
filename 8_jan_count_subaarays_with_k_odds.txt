@@ -1,0 +1,36 @@
+class Solution {
+  public:
+    int countSubarrays(vector<int>& arr, int k) {
+        // code here
+       int n = arr.size();
+        int count = 0;  // Keeps track of valid subarrays ending at the previous index
+        int ans = 0;    // Total answer
+        int left = 0;   // Left pointer of the window
+        
+        for (int right = 0; right < n; right++) {
+            // If current number is odd, decrement k
+            if (arr[right] % 2 == 1) {
+                k--;
+                // Reset count because we encountered a new odd number, 
+                // so the sequence of valid subarrays changes.
+                count = 0; 
+            }
+            
+            // While we have exactly k odd numbers (or more)
+            // We shrink the window from the left
+            while (k == 0) {
+                // Determine if the number at 'left' is odd
+                if (arr[left] % 2 == 1) {
+                    k++; // If we remove an odd, k goes back to 1
+                }
+                left++;
+                count++; // Count valid starting positions
+            }
+            
+            // Add the number of valid subarrays ending at 'right'
+            ans += count;
+        }
+        
+        return ans;
+    }
+};

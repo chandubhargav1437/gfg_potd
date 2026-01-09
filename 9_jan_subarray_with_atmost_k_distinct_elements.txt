@@ -1,0 +1,26 @@
+class Solution {
+  public:
+    int countAtMostK(vector<int> &arr, int k) {
+        // code here
+        unordered_map<int,int>mp;
+        int n = arr.size();
+        long long c=0;
+        int left=0;
+        for(int right=0;right<n;right++){
+            if(k==0){
+                return 0;
+            }
+            mp[arr[right]]++;
+            while(mp.size()>k){
+                int leftval=arr[left];
+                mp[leftval]--;
+                if(mp[leftval]==0){
+                    mp.erase(leftval);
+                }
+                left++;
+            }
+            c+=right-left+1;
+        }
+        return c;
+    }
+};

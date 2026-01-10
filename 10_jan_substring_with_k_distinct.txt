@@ -1,0 +1,42 @@
+class Solution {
+  public:
+    long long countAtMostK(string s, int k) {
+    if (k < 0) return 0;
+
+    long long count = 0;
+    int start = 0;
+    int distinct_count = 0;
+    vector<int> freq(26, 0); // O(1) space for 26 lowercase letters
+
+    for (int end = 0; end < s.length(); end++) {
+        // Add the current character to the window
+        int charIndex = s[end] - 'a';
+        if (freq[charIndex] == 0) {
+            distinct_count++;
+        }
+        freq[charIndex]++;
+
+        // If we have more than k distinct characters, shrink the window from the left
+        while (distinct_count > k) {
+            int leftCharIndex = s[start] - 'a';
+            freq[leftCharIndex]--;
+            if (freq[leftCharIndex] == 0) {
+                distinct_count--;
+            }
+            start++;
+        }
+
+        // All substrings ending at 'end' and starting anywhere between 'start' and 'end'
+        // are valid. The number of such substrings is length of the window.
+        count += (end - start + 1);
+    }
+
+    return count;
+}
+
+// Main function to solve the problem
+long long countSubstr(string s, int k) {
+    // Exactly K = (At Most K) - (At Most K-1)
+    return countAtMostK(s, k) - countAtMostK(s, k - 1);
+}
+};

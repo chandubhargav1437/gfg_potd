@@ -1,0 +1,70 @@
+class Solution {
+  public:
+    string minWindow(string& s1, string& s2) {
+        // Code here
+        if (s1.empty() || s2.empty() || s1.length() < s2.length()) {
+        return "";
+    }
+
+    int n = s1.length();
+    int m = s2.length();
+    
+    // Variables to store the best substring found so far
+    int min_len = INT_MAX;
+    int best_start = -1;
+
+    // Iterate through s1 to find potential end points
+    int i = 0; // Pointer for s1
+    int j = 0; // Pointer for s2
+
+    while (i < n) {
+        // If characters match, move the s2 pointer
+        if (s1[i] == s2[j]) {
+            j++;
+        }
+
+        // If we have matched the entire string s2
+        if (j == m) {
+            // 1. Backtrack to find the optimal start point for this ending
+            // We start from the current 'i' and go backwards matching s2 in reverse
+            int temp_end = i;
+            int temp_j = m - 1;
+            
+            while (temp_j >= 0) {
+                if (s1[temp_end] == s2[temp_j]) {
+                    temp_j--;
+                }
+                temp_end--;
+            }
+            
+            // Because the loop decrements one extra time, start is temp_end + 1
+            int start_idx = temp_end + 1;
+            int current_len = i - start_idx + 1;
+
+            // 2. Update minimum length if this one is smaller
+            // Note: We strictly use '<' to keep the first occurrence in case of ties
+            if (current_len < min_len) {
+                min_len = current_len;
+                best_start = start_idx;
+            }
+
+            // 3. Optimization: Reset search to find the next occurrence
+            // We restart s1 pointer 'i' to just after the start of this valid window.
+            // This ensures we find overlapping solutions.
+            i = start_idx; 
+            j = 0; 
+        }
+        
+        i++;
+    }
+
+    if (best_start == -1) {
+        return "";
+    }
+
+    return s1.substr(best_start, min_len);
+
+
+// Driver code to test the function
+    }
+};

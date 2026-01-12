@@ -1,0 +1,35 @@
+class Solution {
+  public:
+    vector<int> maxOfSubarrays(vector<int>& arr, int k) {
+        // code here
+        deque<int> dq;
+    vector<int> result;
+
+    for (int i = 0; i < arr.size(); ++i) {
+        
+        // 1. Remove elements that are out of the current window
+        // The window is [i - k + 1, i]. Any index <= i - k is invalid.
+        if (!dq.empty() && dq.front() == i - k) {
+            dq.pop_front();
+        }
+
+        // 2. Maintain Decreasing Order:
+        // Remove elements from the back that are smaller than the current element.
+        // They are no longer useful because the current element is larger and newer.
+        while (!dq.empty() && arr[dq.back()] <= arr[i]) {
+            dq.pop_back();
+        }
+
+        // 3. Add current element's index
+        dq.push_back(i);
+
+        // 4. Add the maximum element of the current window to the result
+        // We start adding to result only when we have processed at least k elements (window size reached).
+        if (i >= k - 1) {
+            result.push_back(arr[dq.front()]);
+        }
+    }
+
+    return result;
+    }
+};

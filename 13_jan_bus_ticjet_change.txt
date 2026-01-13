@@ -1,0 +1,41 @@
+class Solution {
+  public:
+    bool canServe(vector<int> &arr) {
+        // code here
+       int five = 0; 
+    int ten = 0; 
+
+    for (int bill : arr) {
+        if (bill == 5) {
+            // Case 1: Customer gives 5. No change needed.
+            five++;
+        } 
+        else if (bill == 10) {
+            // Case 2: Customer gives 10. We need to give back 5.
+            if (five == 0) return false; // Cannot give change
+            five--;
+            ten++;
+        } 
+        else { // bill == 20
+            // Case 3: Customer gives 20. We need to give back 15.
+            
+            // Strategy A (Greedy): Try to give one 10 and one 5 first.
+            // We prefer using the 10 because 5s are more versatile for future customers.
+            if (ten > 0 && five > 0) {
+                ten--;
+                five--;
+            }
+            // Strategy B: If we don't have a 10, try to give three 5s.
+            else if (five >= 3) {
+                five -= 3;
+            } 
+            else {
+                // Cannot give change
+                return false;
+            }
+        }
+    }
+    
+    return true;
+    }
+};

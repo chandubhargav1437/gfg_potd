@@ -1,0 +1,55 @@
+class Solution {
+  public:
+    int catchThieves(vector<char> &arr, int k) {
+        // Code here
+      int c = 0;
+    int i = 0;
+    int n = arr.size();
+
+    // Iterate through every element 'x' in the array
+    for(auto x : arr) {
+        bool isit = false;
+        
+        if(x == 'T') {
+            int temp = k;
+            
+            // --- LEFT SEARCH ---
+            // Corrected: Start 'tt' at 'k' (furthest) and go down to 1.
+            // This ensures we take the "stale" policeman first.
+            int tt = k; 
+            while(tt >= 1) {
+                if(i - tt >= 0) { // Check bounds
+                    if(arr[i-tt] == 'P') {
+                        c++;
+                        arr[i-tt] = 'W'; // Mark as worked
+                        isit = true;
+                        break;
+                    }
+                }
+                tt--; // Decrement to move closer to 'i'
+            }
+
+            // --- RIGHT SEARCH ---
+            // Only search right if we didn't find one on the left
+            if(isit == false) {
+                tt = 1;
+                while(tt <= k) {
+                    if(i + tt < n) { // Check bounds
+                        if(arr[i+tt] == 'P') {
+                            c++;
+                            arr[i+tt] = 'W'; // Mark as worked
+                            break;
+                        }
+                    }
+                    tt++; // Increment to move further from 'i'
+                }
+            }
+        }
+        
+        // Increment index 'i' exactly once per loop iteration
+        i++;
+    }
+    return c;
+
+    }
+};

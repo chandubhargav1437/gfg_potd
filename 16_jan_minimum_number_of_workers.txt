@@ -1,0 +1,56 @@
+class Solution {
+  public:
+    int minMen(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        if (n == 0) return 0;
+
+        // Step 1: Transformation
+        // max_range[i] stores the furthest index reachable 
+        // by an interval starting at index 'i'.
+        vector<int> max_range(n, -1);
+
+        for (int i = 0; i < n; ++i) {
+            if (arr[i] == -1) continue; // Person unavailable
+
+            int left = max(0, i - arr[i]);
+            int right = min(n - 1, i + arr[i]);
+
+            max_range[left] = max(max_range[left], right);
+        }
+
+        // Step 2: Greedy Calculation (Discrete Version)
+        int people_count = 0;
+        int current_covered_index = -1; // We have covered up to this index (inclusive)
+        int max_reachable = -1;         // The furthest we can reach with available options
+
+        for (int i = 0; i < n; ++i) {
+            // Update the furthest reach available from indices seen so far
+            if (max_range[i] > max_reachable) {
+                max_reachable = max_range[i];
+            }
+
+            // If we are at the index that needs to be covered next
+            if (i == current_covered_index + 1) {
+                // If we can't even cover the current index 'i', it's impossible
+                if (max_reachable < i) {
+                    return -1;
+                }
+
+                // Hire the person who gives us the max_reachable
+                people_count++;
+                current_covered_index = max_reachable;
+
+                // Optimization: If we covered the whole array, return immediately
+                if (current_covered_index >= n - 1) {
+                    return people_count;
+                }
+            }
+        }
+
+        // Final check: Did we cover the last index?
+        if (current_covered_index < n - 1) return -1;
+
+        return people_count;
+    }
+};

@@ -1,0 +1,43 @@
+class Solution {
+  public:
+    bool checkRedundancy(string &s) {
+        // code here
+        stack<char> st;
+
+    for (char ch : s) {
+        // If the current character is a closing parenthesis ')'
+        if (ch == ')') {
+            char top = st.top();
+            st.pop();
+
+            // Flag to check if the current sub-expression has an operator
+            bool hasOperator = false;
+
+            // Pop elements from stack until matching '(' is found
+            while (!st.empty() && top != '(') {
+                // If we find an operator, the brackets are useful
+                if (top == '+' || top == '-' || top == '*' || top == '/') {
+                    hasOperator = true;
+                }
+                
+                // Move to the next element
+                top = st.top();
+                st.pop();
+            }
+
+            // If no operator was found between the pair of parentheses, 
+            // it means the pair is redundant.
+            if (!hasOperator) {
+                return true;
+            }
+        } 
+        else {
+            // Push open parenthesis '(', operators, and operands to the stack
+            st.push(ch);
+        }
+    }
+    
+    // If we process the whole string without returning true, there are no redundant brackets
+    return false;
+    }
+};

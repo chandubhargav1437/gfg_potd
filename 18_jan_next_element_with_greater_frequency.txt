@@ -1,0 +1,41 @@
+class Solution {
+  public:
+    vector<int> nextFreqGreater(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+    unordered_map<int, int> freq;
+    
+    // Step 1: Count frequencies of all elements
+    // Time: O(N)
+    for (int num : arr) {
+        freq[num]++;
+    }
+
+    vector<int> result(n);
+    stack<int> s; // Stack stores values (not indices)
+
+    // Step 2: Iterate from Right to Left
+    // Time: O(N)
+    for (int i = n - 1; i >= 0; i--) {
+        int currentFreq = freq[arr[i]];
+
+        // Pop elements that have less or equal frequency than current
+        while (!s.empty() && freq[s.top()] <= currentFreq) {
+            s.pop();
+        }
+
+        // If stack is empty, no greater frequency element exists to the right
+        if (s.empty()) {
+            result[i] = -1;
+        } else {
+            // The top of the stack is the next greater frequency element
+            result[i] = s.top();
+        }
+
+        // Push current element to stack for future comparisons
+        s.push(arr[i]);
+    }
+
+    return result;
+    }
+};

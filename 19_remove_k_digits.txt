@@ -1,0 +1,36 @@
+class Solution {
+  public:
+    string removeKdig(string &s, int k) {
+        // code here
+        string result = "";
+
+        for (char c : s) {
+            // While we can remove digits (k > 0), the result is not empty,
+            // and the last digit is greater than the current digit 'c'
+            while (result.length() > 0 && result.back() > c && k > 0) {
+                result.pop_back();
+                k--;
+            }
+
+            // Avoid adding leading zeros strictly during the build phase
+            // unless it's a non-zero digit or we are already building a number
+            if (result.length() > 0 || c != '0') {
+                result.push_back(c);
+            }
+        }
+
+        // If k > 0, remove remaining digits from the end
+        // This handles cases like "12345", k=2 -> remove '4' and '5'
+        while (result.length() > 0 && k > 0) {
+            result.pop_back();
+            k--;
+        }
+
+        // If the stack is empty, return "0"
+        if (result == "") {
+            return "0";
+        }
+
+        return result;
+    }
+};

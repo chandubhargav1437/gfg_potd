@@ -1,0 +1,34 @@
+#include <vector>
+#include <stack>
+using namespace std;
+
+class Solution {
+  public:
+    vector<int> calculateSpan(vector<int>& arr) {
+        int n = arr.size();
+        vector<int> span(n);
+        stack<int> st; // Stores indices
+
+        for (int i = 0; i < n; i++) {
+            // Pop elements that are less than or equal to current price
+            // We want to find the nearest previous day with a strictly greater price
+            while (!st.empty() && arr[st.top()] <= arr[i]) {
+                st.pop();
+            }
+
+            // If stack is empty, it means all previous prices were smaller
+            // So the span is the entire duration up to now (i + 1)
+            if (st.empty()) {
+                span[i] = i + 1;
+            } else {
+                // The top of the stack is the nearest previous greater element
+                span[i] = i - st.top();
+            }
+
+            // Push current index to stack
+            st.push(i);
+        }
+
+        return span;
+    }
+};

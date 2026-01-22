@@ -1,0 +1,82 @@
+class Solution {
+  public:
+    int subarrayRanges(vector<int>& arr) {
+        vector<int>nums;
+        nums=arr;
+       int n = nums.size();
+        int totalSum = 0;
+        
+        // Vectors to store boundaries
+        vector<int> prevGreater(n), nextGreater(n);
+        vector<int> prevLess(n), nextLess(n);
+        
+        stack<int> s;
+
+        // 1. Find Previous Greater Element (Index)
+        // We want the index of the first element to the LEFT that is > nums[i]
+        for (int i = 0; i < n; ++i) {
+            while (!s.empty() && nums[s.top()] <= nums[i]) {
+                s.pop();
+            }
+            prevGreater[i] = s.empty() ? -1 : s.top();
+            s.push(i);
+        }
+
+        // Clear stack for next pass
+        while (!s.empty()) s.pop();
+
+        // 2. Find Next Greater Element (Index)
+        // We want the index of the first element to the RIGHT that is >= nums[i]
+        // (Note: Using >= here and <= in step 1 handles duplicates correctly)
+        for (int i = n - 1; i >= 0; --i) {
+            while (!s.empty() && nums[s.top()] < nums[i]) {
+                s.pop();
+            }
+            nextGreater[i] = s.empty() ? n : s.top();
+            s.push(i);
+        }
+
+        while (!s.empty()) s.pop();
+
+        // 3. Find Previous Smaller Element (Index)
+        // Index of first element to LEFT that is < nums[i]
+        for (int i = 0; i < n; ++i) {
+            while (!s.empty() && nums[s.top()] >= nums[i]) {
+                s.pop();
+            }
+            prevLess[i] = s.empty() ? -1 : s.top();
+            s.push(i);
+        }
+
+        while (!s.empty()) s.pop();
+
+        // 4. Find Next Smaller Element (Index)
+        // Index of first element to RIGHT that is <= nums[i]
+        for (int i = n - 1; i >= 0; --i) {
+            while (!s.empty() && nums[s.top()] > nums[i]) {
+                s.pop();
+            }
+            nextLess[i] = s.empty() ? n : s.top();
+            s.push(i);
+        }
+
+        // 5. Calculate Total Contribution
+        for (int i = 0; i < n; ++i) {
+            // Count of subarrays where nums[i] is Max
+            long long leftCountMax = i - prevGreater[i];
+            long long rightCountMax = nextGreater[i] - i;
+            
+            // Count of subarrays where nums[i] is Min
+            long long leftCountMin = i - prevLess[i];
+            long long rightCountMin = nextLess[i] - i;
+
+            // Add Max contribution, subtract Min contribution
+            long long maxContribution = (leftCountMax * rightCountMax) * nums[i];
+            long long minContribution = (leftCountMin * rightCountMin) * nums[i];
+            
+            totalSum += (maxContribution - minContribution);
+        }
+
+        return totalSum;
+    }
+};

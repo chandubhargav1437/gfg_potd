@@ -1,0 +1,56 @@
+class Solution {
+  public:
+    int maxPeople(vector<int> &arr) {
+        // code here
+        int n = arr.size();
+        if (n == 0) return 0;
+
+        vector<int> left_bound(n, -1);
+        vector<int> right_bound(n, n);
+        stack<int> s;
+
+        // 1. Find Left Boundaries (Previous Greater or Equal Element)
+        for (int i = 0; i < n; i++) {
+            // Remove people strictly smaller than current person
+            while (!s.empty() && arr[s.top()] < arr[i]) {
+                s.pop();
+            }
+            
+            if (!s.empty()) {
+                left_bound[i] = s.top();
+            } else {
+                left_bound[i] = -1;
+            }
+            s.push(i);
+        }
+
+        // Clear stack for the next pass
+        while (!s.empty()) s.pop();
+
+        // 2. Find Right Boundaries (Next Greater or Equal Element)
+        for (int i = n - 1; i >= 0; i--) {
+            // Remove people strictly smaller than current person
+            while (!s.empty() && arr[s.top()] < arr[i]) {
+                s.pop();
+            }
+            
+            if (!s.empty()) {
+                right_bound[i] = s.top();
+            } else {
+                right_bound[i] = n;
+            }
+            s.push(i);
+        }
+
+        // 3. Calculate Maximum Visibility
+        // The visible range for person i is (left_bound[i], right_bound[i])
+        // The count is (Right - Left - 1)
+        int max_count = 0;
+        for (int i = 0; i < n; i++) {
+            int current_visible = right_bound[i] - left_bound[i] - 1;
+            max_count = max(max_count, current_visible);
+        }
+
+        return max_count;
+    }
+};

@@ -1,0 +1,16 @@
+class Solution {
+  public:
+    int josephus(int n, int k) {
+       int survivorIndex = 0;
+
+        // We iteratively calculate the position for 2 people, then 3, up to n.
+        // i represents the current number of people in the circle.
+        for (int i = 2; i <= n; ++i) {
+            survivorIndex = (survivorIndex + k) % i;
+        }
+
+        // The calculated survivorIndex is 0-based.
+        // The problem asks for a 1-based index, so we add 1.
+        return survivorIndex + 1;
+    }
+};

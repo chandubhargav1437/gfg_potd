@@ -1,0 +1,43 @@
+class Solution {
+  public:
+    bool isWordExist(vector<vector<char>> &mat, string &word) {
+       int n = mat.size();
+        int m = mat[0].size();
+        
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                // If the first character matches, start DFS
+                if (mat[i][j] == word[0]) {
+                    if (dfs(mat, word, i, j, 0)) return true;
+                }
+            }
+        }
+        return false;
+    }
+
+private:
+    bool dfs(vector<vector<char>>& mat, string& word, int i, int j, int index) {
+        // Base Case: If we have matched all characters
+        if (index == word.length()) return true;
+        
+        // Boundary checks and character mismatch check
+        if (i < 0 || i >= mat.size() || j < 0 || j >= mat[0].size() || mat[i][j] != word[index]) {
+            return false;
+        }
+        
+        // Mark the current cell as visited by temporarily changing its value
+        char temp = mat[i][j];
+        mat[i][j] = '#'; 
+        
+        // Explore all 4 possible directions: Up, Down, Left, Right
+        bool found = dfs(mat, word, i + 1, j, index + 1) ||
+                     dfs(mat, word, i - 1, j, index + 1) ||
+                     dfs(mat, word, i, j + 1, index + 1) ||
+                     dfs(mat, word, i, j - 1, index + 1);
+        
+        // Backtrack: Restore the original value
+        mat[i][j] = temp;
+        
+        return found;
+    }
+};

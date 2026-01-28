@@ -1,0 +1,41 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+
+using namespace std;
+
+class Solution {
+public:
+    int countSubset(vector<int> &arr, int k) {
+        // Optimization: If all numbers are negative and k is positive, 
+        // return 0 immediately to save time.
+        bool allNegative = true;
+        for(int x : arr) if(x > 0) { allNegative = false; break; }
+        if(allNegative && k > 0) return 0;
+
+        // Use a map instead of a vector.
+        // Key: Current Sum, Value: Count of ways to get that sum
+        unordered_map<int, int> dp;
+        
+        // Base case: One way to get sum 0 (empty subset)
+        dp[0] = 1;
+
+        for (int num : arr) {
+            // We need to capture the state of DP before processing this 'num'
+            // to ensure we don't use the same element twice for the same subset.
+            // Copying to a vector of pairs avoids iterator invalidation issues.
+            vector<pair<int, int>> current_sums(dp.begin(), dp.end());
+            
+            for (auto& p : current_sums) {
+                int current_sum = p.first;
+                int count = p.second;
+                
+                // Update the count for the new sum (current_sum + num)
+                // Note: We perform addition here. The map handles negative keys automatically.
+                dp[current_sum + num] += count;
+            }
+        }
+
+        return dp[k];
+    }
+};

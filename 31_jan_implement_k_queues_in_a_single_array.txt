@@ -1,0 +1,96 @@
+#include <vector>
+#include <iostream>
+
+using namespace std;
+
+class kQueues {
+    int n; // Size of the array
+    int k; // Number of queues
+    vector<int> arr;   // Stores the actual elements
+    vector<int> front; // Stores the front index of each queue
+    vector<int> rear;  // Stores the rear index of each queue
+    vector<int> next;  // Stores next index for queues and free spots
+    int freeSpot;      // Index of the first free spot in the array
+
+public:
+    // Constructor
+    kQueues(int n, int k) {
+        this->n = n;
+        this->k = k;
+        
+        arr.resize(n);
+        front.assign(k, -1); // Initialize all queues as empty
+        rear.assign(k, -1);
+        next.resize(n);
+
+        // Initialize next[] to link all free spots
+        // next[0] -> 1, next[1] -> 2, ..., next[n-1] -> -1
+        for (int i = 0; i < n - 1; i++) {
+            next[i] = i + 1;
+        }
+        next[n - 1] = -1; // End of free list
+        
+        freeSpot = 0; // The first free spot is at index 0
+    }
+
+    // Adds element x into the i-th queue
+    void enqueue(int x, int i) {
+        // 1. Check if array is full
+        if (freeSpot == -1) {
+            return; // Overflow
+        }
+
+        // 2. Find the index where we will insert the element
+        int index = freeSpot;
+
+        // 3. Update freeSpot to the next available free slot
+        freeSpot = next[index];
+
+        // 4. If queue is empty, update front; otherwise link previous rear to new index
+        if (front[i] == -1) {
+            front[i] = index;
+        } else {
+            next[rear[i]] = index;
+        }
+
+        // 5. Update next[index] to -1 because it is now the last element of this queue
+        next[index] = -1;
+
+        // 6. Update rear of the queue and insert the element
+        rear[i] = index;
+        arr[index] = x;
+    }
+
+    // Removes the front element from the i-th queue
+    int dequeue(int i) {
+        // 1. Check if queue is empty
+        if (front[i] == -1) {
+            return -1; // Underflow
+        }
+
+        // 2. Find the index of the item to be removed
+        int index = front[i];
+
+        // 3. Move front to the next item in the queue
+        front[i] = next[index];
+
+        // 4. Recycle the spot: Link this index back to the free list
+        next[index] = freeSpot;
+        freeSpot = index;
+
+        // 5. If queue becomes empty (front became -1), conceptually rear is irrelevant
+        // but we usually don't need to reset rear[i] explicitly until next enqueue.
+        
+        return arr[index];
+    }
+
+    // Check if i-th queue is empty
+    bool isEmpty(int i) {
+        return front[i] == -1;
+    }
+
+    // Check if the entire array is full
+    bool isFull() {
+        return freeSpot == -1;
+    }
+};

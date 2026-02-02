@@ -1,0 +1,44 @@
+#include <vector>
+#include <algorithm>
+#include <numeric>
+
+using namespace std;
+
+class Solution {
+  public:
+    int maxCircularSum(vector<int> &arr) {
+        // Initialize variables for Kadane's algorithm (Max and Min)
+        // We use long long to prevent overflow during intermediate additions if needed, 
+        // though int is usually sufficient given standard constraints.
+        int total_sum = 0;
+        
+        int curr_max = 0;
+        int max_so_far = arr[0];
+        
+        int curr_min = 0;
+        int min_so_far = arr[0];
+
+        for (int x : arr) {
+            // Calculate Total Sum
+            total_sum += x;
+
+            // Standard Kadane's for Maximum Subarray
+            curr_max = max(x, curr_max + x);
+            max_so_far = max(max_so_far, curr_max);
+
+            // Inverted Kadane's for Minimum Subarray
+            curr_min = min(x, curr_min + x);
+            min_so_far = min(min_so_far, curr_min);
+        }
+
+        // Edge Case: If all numbers are negative, max_so_far will be negative.
+        // In this case, the circular sum (total - min) would effectively be 0 
+        // (empty subarray), which is invalid. We return the max single element.
+        if (max_so_far < 0) {
+            return max_so_far;
+        }
+
+        // The answer is the maximum of the non-wrapping case vs the wrapping case
+        return max(max_so_far, total_sum - min_so_far);
+    }
+};

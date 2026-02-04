@@ -1,0 +1,24 @@
+#include <vector>
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+class Solution {
+public:
+    int getLastMoment(int n, vector<int>& left, vector<int>& right) {
+        int last_fall_time = 0;
+
+        // Calculate time for ants moving left to reach position 0
+        for (int pos : left) {
+            last_fall_time = max(last_fall_time, pos);
+        }
+
+        // Calculate time for ants moving right to reach position n
+        for (int pos : right) {
+            last_fall_time = max(last_fall_time, n - pos);
+        }
+
+        return last_fall_time;
+    }
+};

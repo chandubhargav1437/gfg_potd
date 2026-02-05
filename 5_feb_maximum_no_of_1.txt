@@ -1,0 +1,31 @@
+class Solution {
+  public:
+    int maxOnes(vector<int>& arr, int k) {
+        int left = 0;
+        int right = 0;
+        int zerosCount = 0;
+        int maxLen = 0;
+        int n = arr.size();
+
+        while (right < n) {
+            // If we find a 0, "flip" it conceptually
+            if (arr[right] == 0) {
+                zerosCount++;
+            }
+
+            // If we've flipped more than k zeros, shrink the window from the left
+            while (zerosCount > k) {
+                if (arr[left] == 0) {
+                    zerosCount--;
+                }
+                left++;
+            }
+
+            // Calculate the current window size and update maxLen
+            maxLen = max(maxLen, right - left + 1);
+            right++;
+        }
+
+        return maxLen;
+    }
+};

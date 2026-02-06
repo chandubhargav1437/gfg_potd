@@ -1,0 +1,63 @@
+#include <vector>
+#include <algorithm>
+#include <climits>
+
+using namespace std;
+
+class Solution {
+  public:
+    vector<int> smallestDiff(vector<int>& a, vector<int>& b, vector<int>& c) {
+        // Step 1: Sort all arrays to allow the pointer approach
+        sort(a.begin(), a.end());
+        sort(b.begin(), b.end());
+        sort(c.begin(), c.end());
+        
+        int n = a.size(); // Assuming all arrays are the same size per problem description
+        int i = 0, j = 0, k = 0;
+        
+        int min_diff = INT_MAX;
+        long long min_sum = LLONG_MAX; // Use long long to prevent overflow
+        vector<int> result;
+        
+        // Step 2: Iterate with three pointers
+        while (i < n && j < n && k < n) {
+            int val_a = a[i];
+            int val_b = b[j];
+            int val_c = c[k];
+            
+            // Find min and max of current triplet
+            int current_min = min({val_a, val_b, val_c});
+            int current_max = max({val_a, val_b, val_c});
+            
+            int current_diff = current_max - current_min;
+            long long current_sum = (long long)val_a + val_b + val_c;
+            
+            // Step 3: Check if this triplet is better
+            bool update = false;
+            if (current_diff < min_diff) {
+                update = true;
+            } else if (current_diff == min_diff) {
+                // Tie-breaker: choose smallest sum
+                if (current_sum < min_sum) {
+                    update = true;
+                }
+            }
+            
+            if (update) {
+                min_diff = current_diff;
+                min_sum = current_sum;
+                result = {val_a, val_b, val_c};
+            }
+            
+            // Step 4: Advance the pointer of the minimum element
+            // We want to reduce the range, so we must increase the minimum value.
+            if (val_a == current_min) i++;
+            else if (val_b == current_min) j++;
+            else k++;
+        }
+        
+        // Step 5: Return triplet in decreasing order
+        sort(result.rbegin(), result.rend());
+        return result;
+    }
+};

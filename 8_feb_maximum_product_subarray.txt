@@ -1,0 +1,36 @@
+#include <vector>
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+class Solution {
+  public:
+    int maxProduct(vector<int> &arr) {
+        if (arr.empty()) return 0;
+
+        // Initialize variables with the first element
+        int maxProd = arr[0];
+        int currentMax = arr[0];
+        int currentMin = arr[0];
+
+        // Iterate from the second element
+        for (size_t i = 1; i < arr.size(); ++i) {
+            
+            // If current number is negative, swap max and min candidates
+            if (arr[i] < 0) {
+                swap(currentMax, currentMin);
+            }
+
+            // Calculate current max/min product ending at index i
+            // We either start a new subarray (arr[i]) or extend the previous one (currentMax * arr[i])
+            currentMax = max(arr[i], currentMax * arr[i]);
+            currentMin = min(arr[i], currentMin * arr[i]);
+
+            // Update the global maximum
+            maxProd = max(maxProd, currentMax);
+        }
+
+        return maxProd;
+    }
+};

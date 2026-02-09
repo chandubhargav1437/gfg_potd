@@ -1,0 +1,18 @@
+class Solution {
+public:
+    int findKRotation(vector<int> &arr) {
+        int n = arr.size();
+        
+        // Loop through the array
+        for (int i = 0; i < n - 1; i++) {
+            // The moment the next element is SMALLER than the current one,
+            // we found the rotation point.
+            if (arr[i] > arr[i + 1]) {
+                return i + 1; // The index of the smaller element is the answer
+            }
+        }
+        
+        // If we finish the loop without returning, the array is perfectly sorted
+        return 0;
+    }
+};

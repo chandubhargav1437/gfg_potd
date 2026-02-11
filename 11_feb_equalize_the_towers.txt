@@ -1,0 +1,41 @@
+#include <vector>
+#include <algorithm>
+#include <numeric>
+
+using namespace std;
+
+class Solution {
+public:
+    long long minCost(vector<int>& heights, vector<int>& cost) {
+        int n = heights.size();
+        vector<pair<int, int>> towers(n);
+        
+        long long totalCostSum = 0;
+        for (int i = 0; i < n; i++) {
+            towers[i] = {heights[i], cost[i]};
+            totalCostSum += cost[i];
+        }
+        
+        // Sort towers by height
+        sort(towers.begin(), towers.end());
+        
+        // Find the weighted median height
+        long long currentCostSum = 0;
+        int targetHeight = 0;
+        for (int i = 0; i < n; i++) {
+            currentCostSum += towers[i].second;
+            if (currentCostSum >= (totalCostSum + 1) / 2) { // Middle point of total weight
+                targetHeight = towers[i].first;
+                break;
+            }
+        }
+        
+        // Calculate the minimum cost to reach targetHeight
+        long long minTotalCost = 0;
+        for (int i = 0; i < n; i++) {
+            minTotalCost += (long long)abs(heights[i] - targetHeight) * cost[i];
+        }
+        
+        return minTotalCost;
+    }
+};

@@ -1,0 +1,39 @@
+class Solution {
+private:
+    // Helper function to calculate the sum of digits of a number
+    int sumOfDigits(int num) {
+        int sum = 0;
+        while (num > 0) {
+            sum += num % 10;
+            num /= 10;
+        }
+        return sum;
+    }
+
+public:
+    int getCount(int n, int d) {
+        int low = 1;
+        int high = n;
+        int first_valid = -1;
+        
+        // Binary search to find the smallest number satisfying the condition
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            
+            if (mid - sumOfDigits(mid) >= d) {
+                first_valid = mid;  // This number works, but let's see if there is a smaller one
+                high = mid - 1; 
+            } else {
+                low = mid + 1;      // Difference is too small, we need to check larger numbers
+            }
+        }
+        
+        // If no number satisfies the condition, return 0
+        if (first_valid == -1) {
+            return 0;
+        }
+        
+        // Total valid numbers will be from 'first_valid' up to 'n'
+        return n - first_valid + 1;
+    }
+};

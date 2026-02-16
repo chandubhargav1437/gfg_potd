@@ -1,0 +1,29 @@
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class Solution {
+public:
+    bool canAttend(vector<vector<int>>& arr) {
+        // Handle edge case of empty or single meeting
+        if (arr.size() <= 1) {
+            return true;
+        }
+
+        // Step 1: Sort the meetings by their starting times
+        sort(arr.begin(), arr.end());
+
+        // Step 2: Iterate and check for overlaps
+        for (int i = 1; i < arr.size(); ++i) {
+            // If the start time of the current meeting is less than 
+            // the end time of the previous meeting, they overlap.
+            if (arr[i][0] < arr[i - 1][1]) {
+                return false;
+            }
+        }
+
+        // If no overlaps are found, they can attend all meetings
+        return true;
+    }
+};

@@ -1,0 +1,69 @@
+class Solution {
+  public:
+    // Helper function to merge two sorted subarrays and count split inversions
+    long long mergeAndCount(vector<int>& arr, vector<int>& temp, int left, int mid, int right) {
+        int i = left;       // Index for left subarray
+        int j = mid + 1;    // Index for right subarray
+        int k = left;       // Index for temp array
+        long long inv_count = 0;
+
+        while (i <= mid && j <= right) {
+            if (arr[i] <= arr[j]) {
+                // No inversion, simply place the smaller element
+                temp[k++] = arr[i++];
+            } else {
+                // Inversion found: arr[i] > arr[j]
+                // Since left part is sorted, all remaining elements in left 
+                // (from i to mid) are also greater than arr[j].
+                temp[k++] = arr[j++];
+                inv_count += (mid - i + 1);
+            }
+        }
+
+        // Copy remaining elements of left subarray
+        while (i <= mid) {
+            temp[k++] = arr[i++];
+        }
+
+        // Copy remaining elements of right subarray
+        while (j <= right) {
+            temp[k++] = arr[j++];
+        }
+
+        // Copy the sorted subarray back to the original array
+        for (i = left; i <= right; i++) {
+            arr[i] = temp[i];
+        }
+
+        return inv_count;
+    }
+
+    // Recursive function to divide the array and sum up inversions
+    long long mergeSort(vector<int>& arr, vector<int>& temp, int left, int right) {
+        long long inv_count = 0;
+        if (left < right) {
+            int mid = left + (right - left) / 2;
+
+            // Count inversions in left half
+            inv_count += mergeSort(arr, temp, left, mid);
+            
+            // Count inversions in right half
+            inv_count += mergeSort(arr, temp, mid + 1, right);
+
+            // Count split inversions during merge
+            inv_count += mergeAndCount(arr, temp, left, mid, right);
+        }
+        return inv_count;
+    }
+
+    int inversionCount(vector<int> &arr) {
+        int n = arr.size();
+        // Temporary array for merge sort
+        vector<int> temp(n); 
+        
+        // Note: We use long long for the internal counter because
+        // the total inversions can exceed the range of a 32-bit int 
+        // if N is large (e.g., N=10^5).
+        return (int)mergeSort(arr, temp, 0, n - 1);
+    }
+};

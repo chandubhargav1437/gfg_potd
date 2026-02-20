@@ -1,0 +1,32 @@
+class Solution {
+public:
+    string findLargest(vector<int> &arr) {
+        vector<string> str_arr;
+        
+        // Step 1: Convert all integers to strings
+        for (int num : arr) {
+            str_arr.push_back(to_string(num));
+        }
+        
+        // Step 2: Sort using a custom lambda function
+        // We compare the concatenated results of any two strings a and b
+        auto cmp = [](const string& a, const string& b) {
+            return a + b > b + a;
+        };
+        
+        sort(str_arr.begin(), str_arr.end(), cmp);
+        
+        // Step 3: Edge case - if the largest number is "0", the whole array was zeros
+        if (str_arr.empty() || str_arr[0] == "0") {
+            return "0";
+        }
+        
+        // Step 4: Concatenate everything into the final result
+        string result = "";
+        for (const string& s : str_arr) {
+            result += s;
+        }
+        
+        return result;
+    }
+};

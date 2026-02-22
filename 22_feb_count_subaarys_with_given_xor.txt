@@ -1,0 +1,35 @@
+#include <vector>
+#include <unordered_map>
+
+using namespace std;
+
+class Solution {
+  public:
+    long subarrayXor(vector<int> &arr, int k) {
+        long count = 0;
+        int xr = 0; // To store the running prefix XOR
+        unordered_map<int, int> freq;
+        
+        // Base case: A prefix XOR of 0 has been seen 1 time initially.
+        // This handles cases where a prefix itself has an XOR exactly equal to k.
+        freq[0] = 1;
+        
+        for (int num : arr) {
+            // Update the running prefix XOR
+            xr ^= num;
+            
+            // Calculate the target we need to look for in our map
+            int target = xr ^ k;
+            
+            // If the target exists in the map, add its frequency to our count
+            if (freq.find(target) != freq.end()) {
+                count += freq[target];
+            }
+            
+            // Add the current prefix XOR to our map for future elements
+            freq[xr]++;
+        }
+        
+        return count;
+    }
+};

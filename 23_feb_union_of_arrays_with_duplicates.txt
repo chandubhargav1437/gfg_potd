@@ -1,0 +1,18 @@
+class Solution {
+  public:
+    vector<int> findUnion(vector<int>& a, vector<int>& b) {
+        // code here
+        map<int,int>mp;
+        for(auto x:a){
+            mp[x]++;
+        }
+        for(auto x:b){
+            mp[x]++;
+        }
+        vector<int>ans;
+        for(auto x:mp){
+            ans.push_back(x.first);
+        }
+        return ans;
+    }
+};

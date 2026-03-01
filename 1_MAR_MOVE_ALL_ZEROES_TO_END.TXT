@@ -1,0 +1,15 @@
+class Solution {
+  public:
+    void pushZerosToEnd(vector<int>& arr) {
+        // Tracks the index where the next non-zero element should go
+        int nonZeroIndex = 0; 
+        
+        for (int i = 0; i < arr.size(); i++) {
+            // If the current element is not zero, swap it to the front
+            if (arr[i] != 0) {
+                swap(arr[i], arr[nonZeroIndex]);
+                nonZeroIndex++;
+            }
+        }
+    }
+};

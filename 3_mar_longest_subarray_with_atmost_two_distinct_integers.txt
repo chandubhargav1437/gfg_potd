@@ -1,0 +1,29 @@
+class Solution {
+  public:
+    int totalElements(vector<int> &arr) {
+        int n = arr.size();
+        if (n <= 2) return n;
+
+        unordered_map<int, int> counts;
+        int left = 0, maxLen = 0;
+
+        for (int right = 0; right < n; right++) {
+            // Add the current element to our frequency map
+            counts[arr[right]]++;
+
+            // If we have more than 2 distinct integers, shrink from the left
+            while (counts.size() > 2) {
+                counts[arr[left]]--;
+                if (counts[arr[left]] == 0) {
+                    counts.erase(arr[left]);
+                }
+                left++;
+            }
+
+            // Calculate the window size and update maxLen
+            maxLen = max(maxLen, right - left + 1);
+        }
+
+        return maxLen;
+    }
+};
